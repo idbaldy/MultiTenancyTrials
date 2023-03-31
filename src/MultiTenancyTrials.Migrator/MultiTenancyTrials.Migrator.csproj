@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>MultiTenancyTrials.Migrator</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>MultiTenancyTrials.Migrator</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="appsettings.json;log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="8.1.0" />
+    <PackageReference Include="Abp.Castle.Log4Net" Version="8.1.0" />
+    <PackageReference Include="Abp.EntityFramework.Common" Version="8.1.0" />
+    <PackageReference Include="Abp.Web.Common" Version="8.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiTenancyTrials.Core\MultiTenancyTrials.Core.csproj" />
+    <ProjectReference Include="..\MultiTenancyTrials.EntityFrameworkCore\MultiTenancyTrials.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>
