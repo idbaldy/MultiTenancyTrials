@@ -2,8 +2,14 @@
     var _accountService = abp.services.app.account;
     var _$form = $('form[name=TenantChangeForm]');
 
+    //added by me
+    var _loginForm = $('form[name=LoginForm]');
+
     function switchToSelectedTenant () {
         var tenancyName = _$form.find('input[name=TenancyName]').val();
+
+        //added by me
+        var otherTenancyName = _loginForm.find('input[name=usernameOrEmailAddress]').val();
 
         if (!tenancyName) {
             abp.multiTenancy.setTenantIdCookie(null);
@@ -37,6 +43,7 @@
     //Handle save button click
     _$form.closest('div.modal-content').find(".save-button").click(function (e) {
         e.preventDefault();
+        alert(otherTenancyName);
         switchToSelectedTenant();
     });
 

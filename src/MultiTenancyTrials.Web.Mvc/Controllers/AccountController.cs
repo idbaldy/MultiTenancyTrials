@@ -439,7 +439,7 @@ namespace MultiTenancyTrials.Web.Controllers
             var loginInfo = await _sessionAppService.GetCurrentLoginInformations();
             return View("/Views/Shared/Components/TenantChange/_ChangeModal.cshtml", new ChangeModalViewModel
             {
-                //TenancyName = loginInfo.Tenant?.TenancyName
+                TenancyName = loginInfo.Tenant?.TenancyName
                 //TenancyName = GetTenancyFromUserId(loginInfo.User.Id).ToString()
             });
         }
