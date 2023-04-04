@@ -107,8 +107,18 @@ namespace MultiTenancyTrials.Web.Controllers
             //var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, GetTenancyNameOrNull());
 
             //changed
-            var target = await _userManager.FindByEmailAsync(loginModel.UsernameOrEmailAddress);
-            var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, await GetTenancyFromUserId(target.Id));
+            //var target = await _userManager.FindByNameOrEmailAsync(loginModel.UsernameOrEmailAddress);
+            //var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, await GetTenancyFromUserId(target.Id));
+
+            //var userId = AbpSession.GetUserId();
+            //var targetUser = await _userManager.GetUserByIdAsync(userId);
+            //var tenancyId = targetUser.TenantId;
+            //var tenancy = await _tenantManager.FindByIdAsync((int)tenancyId);
+            //var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, tenancy.Name);
+
+            var target = await _userManager.FindByNameOrEmailAsync(loginModel.UsernameOrEmailAddress);
+            var tenancyName = await GetTenancyNameFromUserId(target.Id);
+            var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, tenancyName);
 
             await _signInManager.SignInAsync(loginResult.Identity, loginModel.RememberMe);
             await UnitOfWorkManager.Current.SaveChangesAsync();
@@ -124,26 +134,7 @@ namespace MultiTenancyTrials.Web.Controllers
 
         private async Task<AbpLoginResult<Tenant, User>> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
         {
-            //var user = await _userManager.FindByEmailAsync(usernameOrEmailAddress);
-
-            //if (user == null)
-            //{
-
-            //}
-
-            //var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, await GetTenancyFromUserId(user.Id));
-
-            /*var user = await _userManager.FindByEmailAsync(usernameOrEmailAddress);
-
-            var found = await GetTenancyFromUserId(user.Id);
-
-            Logger.Debug("something: " + found.ToString()); */
-
             var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
-
-            var user = await _userManager.FindByEmailAsync(usernameOrEmailAddress);
-
-            var tenancy = await GetTenancyFromUserId(user.Id);
 
             switch (loginResult.Result)
             {
@@ -178,6 +169,15 @@ namespace MultiTenancyTrials.Web.Controllers
 
             return tenant.TenancyName;
         }
+
+        private async Task<string> GetTenancyNameFromUserId(long id)
+        {
+            var user = await _userManager.GetUserByIdAsync(id);
+            var tenant = await _tenantManager.GetByIdAsync(user.TenantId.Value);
+            return tenant.TenancyName;
+        }
+
+        // END OF OWN STUFF
 
         #endregion
 
@@ -439,7 +439,8 @@ namespace MultiTenancyTrials.Web.Controllers
             var loginInfo = await _sessionAppService.GetCurrentLoginInformations();
             return View("/Views/Shared/Components/TenantChange/_ChangeModal.cshtml", new ChangeModalViewModel
             {
-                TenancyName = loginInfo.Tenant?.TenancyName
+                //TenancyName = loginInfo.Tenant?.TenancyName
+                //TenancyName = GetTenancyFromUserId(loginInfo.User.Id).ToString()
             });
         }
 

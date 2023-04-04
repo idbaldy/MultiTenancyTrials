@@ -30,6 +30,8 @@ namespace MultiTenancyTrials.Controllers
         private readonly IExternalAuthConfiguration _externalAuthConfiguration;
         private readonly IExternalAuthManager _externalAuthManager;
         private readonly UserRegistrationManager _userRegistrationManager;
+        //private readonly UserManager _userManager;
+        //private readonly TenantManager _tenantManager;    
 
         public TokenAuthController(
             LogInManager logInManager,
@@ -38,7 +40,9 @@ namespace MultiTenancyTrials.Controllers
             TokenAuthConfiguration configuration,
             IExternalAuthConfiguration externalAuthConfiguration,
             IExternalAuthManager externalAuthManager,
-            UserRegistrationManager userRegistrationManager)
+            UserRegistrationManager userRegistrationManager
+            /*UserManager userManager,
+            TenantManager tenantManager*/)
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
@@ -47,6 +51,8 @@ namespace MultiTenancyTrials.Controllers
             _externalAuthConfiguration = externalAuthConfiguration;
             _externalAuthManager = externalAuthManager;
             _userRegistrationManager = userRegistrationManager;
+            //_userManager = userManager;
+            //_tenantManager = tenantManager;
         }
 
         [HttpPost]
@@ -56,6 +62,7 @@ namespace MultiTenancyTrials.Controllers
                 model.UserNameOrEmailAddress,
                 model.Password,
                 GetTenancyNameOrNull()
+                //await GetTenancyNameFromUserName(model.UserNameOrEmailAddress)
             );
 
             var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
@@ -68,6 +75,13 @@ namespace MultiTenancyTrials.Controllers
                 UserId = loginResult.User.Id
             };
         }
+
+        //public async Task<string> GetTenancyNameFromUserName(string userName)
+        //{
+        //    var user = await _userManager.FindByNameOrEmailAsync(userName);
+        //    var tenancy = await _tenantManager.GetByIdAsync(user.TenantId.Value);
+        //    return tenancy.Name;
+        //}
 
         [HttpGet]
         public List<ExternalLoginProviderInfoModel> GetExternalAuthenticationProviders()

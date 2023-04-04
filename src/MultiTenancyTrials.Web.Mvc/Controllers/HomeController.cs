@@ -24,11 +24,12 @@ namespace MultiTenancyTrials.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            long id = (long)_sessionScriptManager.AbpSession.UserId;
+            var user = await _userManager.FindByEmailAsync("companyb@gmail.com");
+            string userTenancy = await GetTenancyFromUserId(user.Id);
 
-            var user = _userManager.GetUserById(id);
-
-            string tenancyName = await GetTenancyFromUserId(id);
+            var targetId = AbpSession.UserId;
+            var target = _userManager.GetUserById((long)targetId);
+            string targetTenancy = await GetTenancyFromUserId(target.Id);
 
             return View();
         }
